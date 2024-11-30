@@ -67,6 +67,7 @@ tee $STDOUT < pipe &
 
 #* Add you commands here i.e. point 2.
 touch $OUTPUT_NAME
+
 echo Hi! > $OUTPUT_NAME
 echo $(ls)
 # lar -c ${FHICL} ${FILE_NAME} > pipe
@@ -91,12 +92,12 @@ fi
 
 
 #* check your output file was created, and copy to your permanent storage i.e. point 1.
-if [ -f output.txt ]; then
+if [ -f $OUTPUT_NAME ]; then
 
-    NAME=echo "${OUTPUT_NAME%%.*}"
-    EXT="${FILE#*.}"
-
+    NAME="${OUTPUT_NAME%%.*}"
+    EXT="${OUTPUT_NAME#*.}"
     OUTFILE=${NAME}_${CLUSTER}_${PROCESS}_$(date -u +%Y%m%dT%H%M%SZ).${EXT} # uniquely timestamp file
+    echo $OUTFILE
     mv $OUTPUT_NAME $OUTFILE
     
     # and copy our output file back
