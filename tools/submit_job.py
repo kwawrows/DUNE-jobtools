@@ -14,6 +14,7 @@ class Options:
         self.cpu = 1
         self.tarball = ""
         self.blacklist = ""
+        self.script = os.environ["JOBTOOLS_DIR"] + "/resources/run.sh"
     def read_config(self, config):
         for var in vars(self):
             if var in config["SETTINGS"]:
@@ -34,9 +35,8 @@ def add_entry(lines : list[str], var_name : str, value : any):
             lines[i] = f"{var_name}=\"{value}\"\n"
             continue
 
-
-def configure_scripts(script_vars : dict):
-    with open(os.environ["JOBTOOLS_DIR"] + "/resources/run.sh", "r") as bash_script:
+def configure_scripts(script_vars : dict, run_script : str):
+    with open(run_script, "r") as bash_script:
         lines = bash_script.readlines()
 
     for k, v in script_vars.items():
@@ -57,6 +57,7 @@ def main(options, debug=False):
     # tar_file = "/dune/app/users/sbhuller/dunesw/dunesw-test.tar.gz"
     # script = "/dune/app/users/sbhuller/dunesw/job/run_test_multi_sbhuller.sh"
 
+    print(options.script)
     print(options.variables)
     configure_scripts(options.variables)
 
@@ -87,6 +88,7 @@ if __name__ == "__main__":
     parser.add_argument("-d", "--disk-uasge", dest="disk", type=str, default="10GB", help="disk space used per job")
     parser.add_argument("-l", "--lifetime", dest="lifetime", type=str, default="3h", help="job lifetime")
     parser.add_argument("-c", "--cpu-uasge", dest="cpu", type=int, default=1, help="number of threads used")
+    parser.add_argument("-r", "--run_script", dest="script", type = str, default = os.environ["JOBTOOLS_DIR"] + "/resources/run.sh", help = "script to run which executes the job.")
     parser.add_argument("-t", "--tarball", dest="tarball", type=str, default="", help="custom tarball to use")
     parser.add_argument("-b", "--blacklist", dest="blacklist", type=str, default="", help="sites to blacklist")
     parser.add_argument("--debug", dest="debug", action="store_true", help="debug code without sumbitting a job")
@@ -99,4 +101,5 @@ if __name__ == "__main__":
         config.optionxform = str
         config.read(args.settings)
         options.read_config(config)
+
     main(options, args.debug)
