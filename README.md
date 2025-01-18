@@ -29,7 +29,15 @@ To make a CI certificate to submit grid jobs.
 
 Now setup the proxy: 
 ```
-voms-proxy-init -rfc -noregen -valid 120:00
+voms-proxy-init -rfc -noregen -voms dune:/dune/Role=Analysis
+
+```
+
+And get a token:
+
+```
+htgettoken -a htvaultprod.fnal.gov -i dune
+
 ```
 
 ## Submitting jobs
